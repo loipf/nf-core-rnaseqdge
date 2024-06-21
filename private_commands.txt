@@ -1,0 +1,15 @@
+nf-core create -n rnaseqdge -d "RNA-seq quantification analysis with differential gene expression analysis"
+
+
+nf-core create -n rnaseqdge -d "RNA-seq quantification analysis with differential gene expression analysis"
+
+
+
+### before release
+nf-core lint .
+prettier -w .
+
+
+
+
+
