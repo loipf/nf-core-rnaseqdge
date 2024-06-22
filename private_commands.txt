@@ -1,13 +1,34 @@
+
+### create template
 nf-core create -n rnaseqdge -d "RNA-seq quantification analysis with differential gene expression analysis"
-
-
-nf-core create -n rnaseqdge -d "RNA-seq quantification analysis with differential gene expression analysis"
-
 
 
 ### before release
 nf-core lint .
 prettier -w .
+
+
+### test pipeline
+nextflow run /home/stefanloipfinger/Documents/gitlab/nf-core-rnaseqdge/main.nf \
+	--input /home/stefanloipfinger/Documents/rnaseqdge_test/fastq_data/sample_sheet.csv \
+	--outdir test_output \
+	-profile docker
+
+
+
+
+
+### old
+nextflow run /home/stefanloipfinger/Documents/gitlab/rnavar-master/main.nf \
+	--input /home/stefanloipfinger/Documents/rnavar_test/fastq_data/sample_sheet.csv \
+	-profile docker \
+	--outdir test_output2 --dbsnp '/home/stefanloipfinger/Documents/rnavar_test/GRCh38.dbSNP156.vcf.gz' \
+	--star_index '/home/stefanloipfinger/Documents/rnavar_test/star_index' \
+	--skip_variantannotation true --skip_multiqc true \
+	--vep_genome hg38 --vep_cache_version hg38 \
+	--skip_baserecalibration false \
+	--fasta '/home/stefanloipfinger/Documents/rnavar_test/Homo_sapiens.GRCh38.dna.chromosome.22.fa' \
+	--gtf '/home/stefanloipfinger/Documents/rnavar_test/Homo_sapiens.GRCh38.107.chr22.gtf' -resume
 
 
 

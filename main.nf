@@ -58,7 +58,8 @@ workflow NFCORE_RNASEQDGE {
     )
 
     emit:
-    multiqc_report = RNASEQDGE.out.multiqc_report // channel: /path/to/multiqc_report.html
+    multiqc_report = 'ok'
+    //multiqc_report = RNASEQDGE.out.multiqc_report // channel: /path/to/multiqc_report.html
 
 }
 /*
@@ -88,7 +89,8 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     NFCORE_RNASEQDGE (
-        PIPELINE_INITIALISATION.out.samplesheet
+        //PIPELINE_INITIALISATION.out.samplesheet
+        params.input
     )
 
     //

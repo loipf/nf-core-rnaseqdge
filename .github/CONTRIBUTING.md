@@ -16,7 +16,7 @@ Contributions to the code are even more welcome ;)
 If you'd like to write some code for nf-core/rnaseqdge, the standard workflow is as follows:
 
 1. Check that there isn't already an issue about your idea in the [nf-core/rnaseqdge issues](https://github.com/nf-core/rnaseqdge/issues) to avoid duplicating work
-    * If there isn't one already, please create one so that others know you're working on this
+   - If there isn't one already, please create one so that others know you're working on this
 2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/rnaseqdge repository](https://github.com/nf-core/rnaseqdge) to your GitHub account
 3. Make the necessary changes / additions within your forked repository
 4. Submit a Pull Request against the `dev` branch and wait for the code to be reviewed and merged
@@ -48,9 +48,9 @@ These tests are run both with the latest available version of `Nextflow` and als
 
 : warning: Only in the unlikely and regretful event of a release happening with a bug.
 
-* On your own fork, make a new branch `patch` based on `upstream/master`.
-* Fix the bug, and bump version (X.Y.Z+1).
-* A PR should be made on `master` from patch to directly this particular bug.
+- On your own fork, make a new branch `patch` based on `upstream/master`.
+- Fix the bug, and bump version (X.Y.Z+1).
+- A PR should be made on `master` from patch to directly this particular bug.
 
 ## Getting help
 

@@ -4,6 +4,11 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+include { INPUT_CHECK                   } from '../subworkflows/local/input_check' // Validate the input samplesheet.csv and prepare input channels
+
+
+
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main'
@@ -26,7 +31,7 @@ include { QUANTIFY_PSEUDO_ALIGNMENT } from '../subworkflows/nf-core/quantify_pse
 workflow RNASEQDGE {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
+    ch_input // channel: samplesheet read in from --input
 
     main:
 
@@ -34,6 +39,30 @@ workflow RNASEQDGE {
     ch_multiqc_files = Channel.empty()
 
 
+
+    //
+    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    //
+    INPUT_CHECK (
+        ch_input
+    )
+    .reads
+    .map {
+        meta, fastq ->
+            def meta_clone = meta.clone()
+            meta_clone.id = meta_clone.id.split('_')[0..-2].join('_')
+            [ meta_clone, fastq ]
+    }
+    .groupTuple(by: [0])
+    .branch {
+        meta, fastq ->
+            single  : fastq.size() == 1
+                return [ meta, fastq.flatten() ]
+            multiple: fastq.size() > 1
+                return [ meta, fastq.flatten() ]
+    }
+    .set { ch_fastq }
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
 
     //
@@ -48,23 +77,24 @@ workflow RNASEQDGE {
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
 
 
-
-
     //
     // MODULE: Run FastQC
     //
     FASTQC (
-        ch_samplesheet
+        ch_cat_fastq
     )
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
 
+	ch_cat_fastq.view()
+
+	ch_versions.view()
 
 
-// combine fastq
 
-// apply fastq
+
+
 
 // do aligner
 
@@ -78,6 +108,8 @@ workflow RNASEQDGE {
 
 
 
+/*
+
     //
     // Collate and save software versions
     //
@@ -88,7 +120,8 @@ workflow RNASEQDGE {
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
-
+*/
+    
     //
     // MODULE: MultiQC
     //
@@ -113,7 +146,7 @@ workflow RNASEQDGE {
 
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    //ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)  ## TODO uncomment and fix versions
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_methods_description.collectFile(
             name: 'methods_description_mqc.yaml',
@@ -127,10 +160,12 @@ workflow RNASEQDGE {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-
+    
     emit:
     multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    
+    
 }
 
 /*
