@@ -5,7 +5,8 @@
 */
 
 
-include { INPUT_CHECK                   } from '../subworkflows/local/input_check' // Validate the input samplesheet.csv and prepare input channels
+include { INPUT_CHECK                   } from '../subworkflows/local/input_check' // validate the input samplesheet.csv and prepare input channels
+include { OBTAIN_TRANSCRIPTOME          } from '../subworkflows/local/obtain_transcriptome' // prepare transcriptome
 
 
 
@@ -31,7 +32,12 @@ include { QUANTIFY_PSEUDO_ALIGNMENT } from '../subworkflows/nf-core/quantify_pse
 workflow RNASEQDGE {
 
     take:
-    ch_input // channel: samplesheet read in from --input
+    input_samplesheet	//  string: path to input samplesheet
+    
+    aligner				//  string: aligner method
+    //genome_fasta
+    //genome_gtf
+    
 
     main:
 
@@ -44,7 +50,7 @@ workflow RNASEQDGE {
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     INPUT_CHECK (
-        ch_input
+        input_samplesheet
     )
     .reads
     .map {
@@ -85,6 +91,20 @@ workflow RNASEQDGE {
     )
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
+
+    //
+    // SUBWORKFLOW: obtain genome/transcriptome
+    //
+    
+    /*
+    OBTAIN_TRANSCRIPTOME (
+		genome_fasta,
+		genome_gtf
+    )
+    ch_versions = ch_versions.mix(OBTAIN_TRANSCRIPTOME.out.versions.first())
+
+*/
 
 
 	ch_cat_fastq.view()

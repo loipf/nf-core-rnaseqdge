@@ -88,10 +88,20 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RNASEQDGE (
-        //PIPELINE_INITIALISATION.out.samplesheet
-        params.input
+    
+    
+	NFCORE_RNASEQDGE (
+        params.input,
+        params.aligner
     )
+    
+    /*
+    NFCORE_RNASEQDGE (
+        params.input,
+        params.genome_fasta,
+        params.genome_gtf
+    )
+    */
 
     //
     // SUBWORKFLOW: Run completion tasks

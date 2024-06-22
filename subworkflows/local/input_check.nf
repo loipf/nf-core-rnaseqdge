@@ -1,4 +1,3 @@
-
 //
 // Check input samplesheet and get read channels
 // from: https://github.com/nf-core/rnavar/blob/1.0.0/subworkflows/local/input_check.nf

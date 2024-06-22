@@ -20,6 +20,11 @@
                         "git_sha": "285a50500f9e02578d90b3ce6382ea3c30216acd",
                         "installed_by": ["modules"]
                     },
+                    "gunzip": {
+                        "branch": "master",
+                        "git_sha": "3a5fef109d113b4997c9822198664ca5f2716208",
+                        "installed_by": ["modules"]
+                    },
                     "kallisto/index": {
                         "branch": "master",
                         "git_sha": "de5811dd9ca15af1e131806001bcaae909e42021",
