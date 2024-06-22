@@ -9,17 +9,18 @@ include { INPUT_CHECK                   } from '../subworkflows/local/input_chec
 include { OBTAIN_TRANSCRIPTOME          } from '../subworkflows/local/obtain_transcriptome' // prepare transcriptome
 
 
-
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main'
+
+
+
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rnaseqdge_pipeline'
 
 
-include { QUANTIFY_PSEUDO_ALIGNMENT } from '../subworkflows/nf-core/quantify_pseudo_alignment/main' 
 
 
 
@@ -32,11 +33,11 @@ include { QUANTIFY_PSEUDO_ALIGNMENT } from '../subworkflows/nf-core/quantify_pse
 workflow RNASEQDGE {
 
     take:
-    input_samplesheet	//  string: path to input samplesheet
-    
+    input_samplesheet	//  file: path to input samplesheet
     aligner				//  string: aligner method
-    //genome_fasta
-    //genome_gtf
+    genome_fasta
+    genome_gtf
+    ensembl_release
     
 
     main:
@@ -96,15 +97,35 @@ workflow RNASEQDGE {
     //
     // SUBWORKFLOW: obtain genome/transcriptome
     //
-    
-    /*
     OBTAIN_TRANSCRIPTOME (
+    	aligner,
 		genome_fasta,
-		genome_gtf
+		genome_gtf,
+		ensembl_release
     )
     ch_versions = ch_versions.mix(OBTAIN_TRANSCRIPTOME.out.versions.first())
 
-*/
+
+
+
+	if (aligner in ["star_rsem", "star_salmon"]) {
+	
+	
+	
+	} else if (aligner in ["salmon","kallisto"]) {
+		
+		
+		QUANTIFY_PSEUDO_ALIGNMENT
+		
+		
+	} else {
+		println "no matching aligner found"
+	}
+
+
+
+
+
 
 
 	ch_cat_fastq.view()

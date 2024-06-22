@@ -1,28 +1,31 @@
 //
-// Uncompress and prepare reference genome files
+// run pseudo alignment pipelines
 //
 
-include { GUNZIP as GUNZIP_FASTA } from '../../modules/nf-core/gunzip/main'
-include { GUNZIP as GUNZIP_GTF } from '../../modules/nf-core/gunzip/main'
-include { DOWNLOAD_ENSEMBL_GENOME } from '../../modules/local/download_ensembl_genome'
-include { DOWNLOAD_ENSEMBL_TRANSCRIPTOME } from '../../modules/local/download_ensembl_transcriptome'
-include { DOWNLOAD_ENSEMBL_GTF } from '../../modules/local/download_ensembl_gtf'
+
+include { QUANTIFY_PSEUDO_ALIGNMENT } from '../../subworkflows/nf-core/quantify_pseudo_alignment/main' 
+include { QUANTIFY_PSEUDO_ALIGNMENT } from '../../subworkflows/nf-core/quantify_pseudo_alignment/main' 
 
 
 
 
-workflow OBTAIN_TRANSCRIPTOME {
+
+workflow RUN_PSEUDO_ALIGNMENT {
     
     take:
-    aligner				//  string: aligner method
+    ch_fastq  // channel: 
+    aligner		 //  string: aligner method
     fasta                //      file: /path/to/genome.fasta
     gtf                  //      file: /path/to/genome.gtf
-    ensembl_release		//  string: ensembl_release
     
 
     main:
 
     ch_versions = Channel.empty()
+
+
+
+
 
 
 
