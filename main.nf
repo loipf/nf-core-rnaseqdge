@@ -107,7 +107,7 @@ workflow {
     )
     
 
-
+/*
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -120,6 +120,8 @@ workflow {
         params.hook_url,
         RNASEQDGE.out.multiqc_report
     )
+    
+   */
 }
 
 /*

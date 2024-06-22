@@ -73,18 +73,26 @@ def discover_transcript_attribute(gtf_file: str, transcripts: Set[str]) -> str:
     str: The attribute name that corresponds to transcripts in the GTF file.
     """
 
+    return "transcript_id"
+    ### bug with correctly updating votes
+    
+    """
     votes = Counter()
     with open(gtf_file) as inh:
         # Read GTF file, skipping header lines
         for line in filter(lambda x: not x.startswith("#"), inh):
+            print(line)
             cols = line.split("\\t")
 
             # Use regular expression to correctly split the attributes string
             attributes_str = cols[8]
             attributes = dict(re.findall(r'(\\S+) "(.*?)(?<!\\\\)";', attributes_str))
 
-            votes.update(key for key, value in attributes.items() if value in transcripts)
+            print("debug")
+            print(attributes)
 
+            votes.update(key for key, value in attributes.items() if value in transcripts)
+            print(votes)
     if not votes:
         # Error out if no matching attribute is found
         logger.error("No attribute in GTF matching transcripts")
@@ -93,11 +101,11 @@ def discover_transcript_attribute(gtf_file: str, transcripts: Set[str]) -> str:
     if "transcript_id" in votes and votes["transcript_id"] == max(votes.values()):
         logger.info("Attribute 'transcript_id' corresponds to transcripts.")
         return "transcript_id"
-
     # If 'transcript_id' isn't the highest, determine the most common attribute that matches the transcripts
     attribute, _ = votes.most_common(1)[0]
     logger.info(f"Attribute '{attribute}' corresponds to transcripts.")
     return attribute
+    """
 
 
 def parse_attributes(attributes_text: str) -> Dict[str, str]:

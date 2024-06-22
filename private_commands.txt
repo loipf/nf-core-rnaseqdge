@@ -21,6 +21,19 @@ nextflow run /home/stefanloipfinger/Documents/gitlab/nf-core-rnaseqdge/main.nf \
 	--outdir test_output \
 	-profile docker -resume
 
+nextflow run /home/stefanloipfinger/Documents/gitlab/nf-core-rnaseqdge/main.nf \
+	--input /home/stefanloipfinger/Documents/rnaseqdge_test/fastq_data/sample_sheet.csv \
+	--aligner kallisto \
+	--outdir test_output \
+	-profile docker -resume
+
+nextflow run /home/stefanloipfinger/Documents/gitlab/nf-core-rnaseqdge/main.nf \
+	--input /home/stefanloipfinger/Documents/rnaseqdge_test/fastq_data/sample_sheet.csv \
+	--aligner salmon \
+	--outdir test_output \
+	-profile docker -resume
+
+
 
 
     // alignment
@@ -48,9 +61,9 @@ nextflow run /home/stefanloipfinger/Documents/gitlab/rnavar-master/main.nf \
 
 ### not implemented:
 - single-end reads
-- include prepared indeces of aligners
+- include pre-made indeces of aligners
 - more preprocessing: adapter trimming, removal ribosomal RNA, ...
-
+- make salmon aligner decoy-aware
 
 
 

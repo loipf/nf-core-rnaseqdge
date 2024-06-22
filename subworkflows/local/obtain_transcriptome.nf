@@ -45,15 +45,26 @@ workflow OBTAIN_TRANSCRIPTOME {
     //
     // Uncompress genome fasta file if required
     //
+    
+
     if (fasta.endsWith('.gz')) {
         GUNZIP_FASTA (
             fasta.map{ it -> [[id:it[0].baseName], it] }
         )
-        ch_fasta = GUNZIP_FASTA.out.gunzip.map{ meta, fasta -> [fasta] }.collect()
+        //ch_fasta = GUNZIP_FASTA.out.gunzip.map{ meta, fasta -> [fasta] } //.collect()
+        ch_fasta = GUNZIP_FASTA.out.gunzip.map{ meta, fasta -> [[id:fasta.baseName], fasta] }.collect()
+        
+        
+        
         ch_versions = ch_versions.mix(GUNZIP_FASTA.out.versions)
     } else {
         ch_fasta = fasta.collect()
+        //ch_fasta = Channel.value(file(fasta))
     }
+
+
+	ch_fasta.view()
+	
 
     //
     // Uncompress GTF annotation file or create from GFF3 if required
@@ -64,6 +75,7 @@ workflow OBTAIN_TRANSCRIPTOME {
             gtf.map{ it -> [[id:it[0].baseName], it] }
         )
         ch_gtf = GUNZIP_GTF.out.gunzip.map{ meta, gtf -> [gtf] }.collect()
+        //ch_gtf = GUNZIP_GTF.out.gunzip.map{ meta, gtf -> [[id:gtf.baseName], gtf] }.collect()
         ch_versions = ch_versions.mix(GUNZIP_GTF.out.versions)
     } else {
         ch_gtf = gtf.collect()
@@ -80,18 +92,6 @@ workflow OBTAIN_TRANSCRIPTOME {
 
 
 
-
-
-def getIndexVersion( index_path ) {
-    genomeParameters = new File("$index_path/genomeParameters.txt")
-    if ( genomeParameters.exists() ) {
-        for(line: genomeParameters.readLines()){
-            if(line.startsWith("versionGenome")){
-                return line.split("\t")[1].trim()
-            }
-        }
-    }
-}
 
 
 

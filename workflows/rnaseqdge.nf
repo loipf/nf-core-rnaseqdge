@@ -7,6 +7,7 @@
 
 include { INPUT_CHECK                   } from '../subworkflows/local/input_check' // validate the input samplesheet.csv and prepare input channels
 include { OBTAIN_TRANSCRIPTOME          } from '../subworkflows/local/obtain_transcriptome' // prepare transcriptome
+include { RUN_PSEUDO_ALIGNMENT          } from '../subworkflows/local/run_pseudo_alignment.nf'
 
 
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
@@ -73,7 +74,7 @@ workflow RNASEQDGE {
 
 
     //
-    // MODULE: Concatenate FastQ files from same sample if required
+    // MODULE: concatenate FastQ files from same sample if required
     //
     CAT_FASTQ (
         ch_fastq.multiple
@@ -85,7 +86,7 @@ workflow RNASEQDGE {
 
 
     //
-    // MODULE: Run FastQC
+    // MODULE: run FastQC
     //
     FASTQC (
         ch_cat_fastq
@@ -106,40 +107,23 @@ workflow RNASEQDGE {
     ch_versions = ch_versions.mix(OBTAIN_TRANSCRIPTOME.out.versions.first())
 
 
-
-
+    //
+    // SUBWORKFLOW: mapping step
+    //
 	if (aligner in ["star_rsem", "star_salmon"]) {
-	
+		println "star"
 	
 	
 	} else if (aligner in ["salmon","kallisto"]) {
-		
-		
-		QUANTIFY_PSEUDO_ALIGNMENT
-		
-		
+		RUN_PSEUDO_ALIGNMENT(ch_cat_fastq, aligner, OBTAIN_TRANSCRIPTOME.out.fasta, OBTAIN_TRANSCRIPTOME.out.gtf)
 	} else {
 		println "no matching aligner found"
 	}
 
 
-
-
-
-
-
-	ch_cat_fastq.view()
-
-	ch_versions.view()
-
-
-
-
-
-
-// do aligner
-
-// do DGE
+    //
+    // SUBWORKFLOW: differential gene expression analysis
+    //
 
 
 
