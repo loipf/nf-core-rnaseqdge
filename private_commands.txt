@@ -33,7 +33,7 @@ nextflow run /home/stefanloipfinger/Documents/gitlab/nf-core-rnaseqdge/main.nf \
 	--outdir test_output \
 	-profile docker -resume
 
-
+'biocontainers/bioconductor-tximeta:1.20.1--r43hdfd78af_0' 
 
 
     // alignment
@@ -64,7 +64,6 @@ nextflow run /home/stefanloipfinger/Documents/gitlab/rnavar-master/main.nf \
 - include pre-made indeces of aligners
 - more preprocessing: adapter trimming, removal ribosomal RNA, ...
 - make salmon aligner decoy-aware
-
 
 
 

@@ -1,3 +1,5 @@
+// from: https://github.com/nf-core/rnavar/blob/1.0.0/modules/local/samplesheet_check.nf
+
 process SAMPLESHEET_CHECK {
     tag "$samplesheet"
 
@@ -15,7 +17,7 @@ process SAMPLESHEET_CHECK {
     when:
     task.ext.when == null || task.ext.when
 
-    script: // This script is bundled with the pipeline, in /bin/
+    script: // this script is bundled with the pipeline, in /bin/
     """
     check_samplesheet.py \\
         $samplesheet \\
