@@ -56,11 +56,14 @@ workflow RUN_STAR_ALIGNMENT {
     // align reads
     //
     FASTQ_ALIGN_STAR(reads, STAR_GENOMEGENERATE.out.index, gtf, false, "", "",fasta, "")
-	ch_versions = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions.first())
+	//ch_versions = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions.first())
 
 
-	FASTQ_ALIGN_STAR.out.bam.view()
+	//FASTQ_ALIGN_STAR.out.bam.view()
+	//FASTQ_ALIGN_STAR.out.bam_transcript.view()
 
+
+/*
 
 
 	//
@@ -79,12 +82,13 @@ workflow RUN_STAR_ALIGNMENT {
     	SALMON_INDEX(fasta)
         def lib_type = 'A'
     	def alignment_mode = true
-        SALMON_QUANT( FASTQ_ALIGN_STAR.out.bam, SALMON_INDEX.out.index,  gtf,  fasta, alignment_mode, lib_type )
+        SALMON_QUANT( FASTQ_ALIGN_STAR.out.bam_transcript, SALMON_INDEX.out.index,  gtf,  fasta, alignment_mode, lib_type )
         ch_pseudo_results = SALMON_QUANT.out.results
         ch_pseudo_multiqc = ch_pseudo_results
         ch_versions = ch_versions.mix(SALMON_QUANT.out.versions.first())
 	}
 
+*/
 
 
 /*

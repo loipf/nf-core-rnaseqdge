@@ -15,8 +15,7 @@ include { DGE_ANALYSIS_EDGER            } from '../modules/local/dge_analysis_ed
 
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main'
-
+include { CAT_FASTQ              } from '../modules/nf-core/cat/fastq/main'
 
 
 include { paramsSummaryMap       } from 'plugin/nf-validation'
@@ -77,7 +76,7 @@ workflow RNASEQDGE {
 
 
     //
-    // MODULE: concatenate FastQ files from same sample if required
+    // MODULE: concatenate fastq files from same sample if required
     //
     CAT_FASTQ (
         ch_fastq.multiple
@@ -126,13 +125,14 @@ workflow RNASEQDGE {
 	}
 
 
+/*
     //
     // MODULE: differential gene expression analysis
     //
 	DGE_ANALYSIS_DESEQ2(ch_gene_counts, input_samplesheet)
 	DGE_ANALYSIS_EDGER(ch_gene_counts, input_samplesheet)
 	ch_versions = ch_versions.mix(DGE_ANALYSIS_DESEQ2.out.versions.first())
-
+*/
 
 
 

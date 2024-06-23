@@ -26,6 +26,7 @@ workflow FASTQ_ALIGN_STAR {
     ch_versions = ch_versions.mix(STAR_ALIGN.out.versions.first())
 
 
+/*
     //
     // Sort, index BAM file and run samtools stats, flagstat and idxstats
     //
@@ -66,5 +67,5 @@ workflow FASTQ_ALIGN_STAR {
     idxstats_transcript = BAM_SORT_STATS_SAMTOOLS_TRANSCRIPTOME.out.idxstats // channel: [ val(meta), path(idxstats) ]
 
     versions            = ch_versions                        // channel: [ path(versions.yml) ]
-
+*/
 }
