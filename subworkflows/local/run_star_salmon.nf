@@ -1,18 +1,10 @@
 //
-// run STAR alignment pipelines
+// run STAR with SALMON alignment pipelines
 //
 
 
 include { FASTQ_ALIGN_STAR } from '../../subworkflows/nf-core/fastq_align_star/main'
 include { STAR_GENOMEGENERATE } from '../../modules/nf-core/star/genomegenerate'
-
-
-include { RSEM_PREPAREREFERENCE } from '../../modules/nf-core/rsem/preparereference/main'
-include { RSEM_CALCULATEEXPRESSION } from '../../modules/nf-core/rsem/calculateexpression/main'
-
-
-include { QUANTIFY_RSEM } from '../../subworkflows/local/quantify_rsem'
-
 
 
 include { SALMON_INDEX } from '../../modules/local/salmon_index_custom'
@@ -23,7 +15,7 @@ include { TXIMETA_TXIMPORT } from '../../modules/nf-core/tximeta/tximport'
 
 
 
-workflow RUN_STAR_ALIGNMENT {
+workflow RUN_STAR_SALMON {
     
     take:
     reads      	// channel: [ val(meta), [ reads ] ]
@@ -37,15 +29,6 @@ workflow RUN_STAR_ALIGNMENT {
     ch_versions = Channel.empty()
 
 
-/*
-	RSEM_PREPAREREFERENCE(fasta.map{ fasta -> [fasta[1]] }.collect(), gtf)
-	QUANTIFY_RSEM(reads, RSEM_PREPAREREFERENCE.out.index, fasta)
-
-*/
-
-
-  
-
 	//
     // create index
     //
@@ -56,42 +39,21 @@ workflow RUN_STAR_ALIGNMENT {
     // align reads
     //
     FASTQ_ALIGN_STAR(reads, STAR_GENOMEGENERATE.out.index, gtf, false, "", "",fasta, "")
-	//ch_versions = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions.first())
-
-
-	//FASTQ_ALIGN_STAR.out.bam.view()
-	//FASTQ_ALIGN_STAR.out.bam_transcript.view()
-
-
-/*
+	ch_versions = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions.first())
 
 
 	//
     // run quantification
     //
-    if (aligner=='star_rsem') {
-    	println "star_rsem"
-    	
-    	//KALLISTO_QUANT(reads, KALLISTO_INDEX.out.index, gtf, [], [], [])
-        //ch_pseudo_results = KALLISTO_QUANT.out.results
-        //ch_pseudo_multiqc = KALLISTO_QUANT.out.log
-        //ch_versions = ch_versions.mix(KALLISTO_QUANT.out.versions.first())
-  
-    
-    } else if (aligner == 'star_salmon') {
-    	SALMON_INDEX(fasta)
-        def lib_type = 'A'
-    	def alignment_mode = true
-        SALMON_QUANT( FASTQ_ALIGN_STAR.out.bam_transcript, SALMON_INDEX.out.index,  gtf,  fasta, alignment_mode, lib_type )
-        ch_pseudo_results = SALMON_QUANT.out.results
-        ch_pseudo_multiqc = ch_pseudo_results
-        ch_versions = ch_versions.mix(SALMON_QUANT.out.versions.first())
-	}
-
-*/
+	SALMON_INDEX(fasta)
+    def lib_type = 'A'
+	def alignment_mode = true
+    SALMON_QUANT( FASTQ_ALIGN_STAR.out.bam_transcript, SALMON_INDEX.out.index,  gtf,  fasta, alignment_mode, lib_type )
+    ch_pseudo_results = SALMON_QUANT.out.results
+    ch_pseudo_multiqc = ch_pseudo_results
+    ch_versions = ch_versions.mix(SALMON_QUANT.out.versions.first())
 
 
-/*
 	//
     // sum up transcripts to genes
     //
@@ -124,7 +86,6 @@ workflow RUN_STAR_ALIGNMENT {
     counts_transcript             = TXIMETA_TXIMPORT.out.counts_transcript         //    path: *transcript_counts.tsv
     lengths_transcript            = TXIMETA_TXIMPORT.out.lengths_transcript        //    path: *transcript_lengths.tsv
 
-*/
     versions                      = ch_versions                                    // channel: [ versions.yml ]
 
 }

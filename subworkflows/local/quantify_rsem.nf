@@ -27,7 +27,7 @@ workflow QUANTIFY_RSEM {
     //
     // Sort, index BAM file and run samtools stats, flagstat and idxstats
     //
-    BAM_SORT_STATS_SAMTOOLS ( RSEM_CALCULATEEXPRESSION.out.bam_star, fasta )
+    BAM_SORT_STATS_SAMTOOLS ( RSEM_CALCULATEEXPRESSION.out.bam_transcript, fasta )
     ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
     //
@@ -38,6 +38,8 @@ workflow QUANTIFY_RSEM {
         RSEM_CALCULATEEXPRESSION.out.counts_transcript.collect{it[1]}
     )
     ch_versions = ch_versions.mix(RSEM_MERGE_COUNTS.out.versions)
+
+
 
     emit:
     counts_gene              = RSEM_CALCULATEEXPRESSION.out.counts_gene       // channel: [ val(meta), counts ]

@@ -43,7 +43,7 @@
 ## Usage
 
 > [!NOTE]
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow.
 
 
 First, prepare a samplesheet with your input data that looks as follows:
@@ -84,7 +84,7 @@ To see the results of an example test run with a full size dataset refer to the 
 For more details about the output files and reports, please refer to the
 [output documentation](https://nf-co.re/rnaseqdge/output).
 
-## possible improvements:
+## Possible improvements:
 
 - single-end reads
 - include pre-made indeces of aligners to avoid construction
@@ -93,21 +93,6 @@ For more details about the output files and reports, please refer to the
 
 
 
-
-
-## Credits
-
-nf-core/rnaseqdge was originally written by loipf.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-For further information or help, don't hesitate to get in touch on the [Slack `#rnaseqdge` channel](https://nfcore.slack.com/channels/rnaseqdge) (you can join with [this invite](https://nf-co.re/join/slack)).
 
 ## Citations
 

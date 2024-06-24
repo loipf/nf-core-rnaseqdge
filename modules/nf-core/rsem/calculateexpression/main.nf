@@ -39,12 +39,13 @@ process RSEM_CALCULATEEXPRESSION {
     """
     INDEX=`find -L ./ -name "*.grp" | sed 's/\\.grp\$//'`
     rsem-calculate-expression \\
-    	--star \\					// edited
+    	--star \\
         --num-threads $task.cpus \\
         --temporary-folder ./tmp/ \\
         $strandedness \\
         $paired_end \\
         $args \\
+        --star-gzipped-read-file \\
         $reads \\
         \$INDEX \\
         $prefix

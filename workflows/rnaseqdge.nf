@@ -8,7 +8,8 @@
 include { INPUT_CHECK                   } from '../subworkflows/local/input_check' // validate the input samplesheet.csv and prepare input channels
 include { OBTAIN_TRANSCRIPTOME          } from '../subworkflows/local/obtain_transcriptome' // prepare transcriptome
 include { RUN_PSEUDO_ALIGNMENT          } from '../subworkflows/local/run_pseudo_alignment.nf'
-include { RUN_STAR_ALIGNMENT            } from '../subworkflows/local/run_star_alignment.nf'
+include { RUN_STAR_SALMON	            } from '../subworkflows/local/run_star_salmon.nf'
+include { RUN_STAR_RSEM            } from '../subworkflows/local/run_star_rsem.nf'
 include { DGE_ANALYSIS_DESEQ2           } from '../modules/local/dge_analysis_deseq2.nf'
 include { DGE_ANALYSIS_EDGER            } from '../modules/local/dge_analysis_edger.nf'
 
@@ -112,32 +113,30 @@ workflow RNASEQDGE {
     //
     // SUBWORKFLOW: mapping step
     //
-	if (aligner in ["star_rsem", "star_salmon"]) {
-		println "star"
-		RUN_STAR_ALIGNMENT(ch_cat_fastq, aligner, OBTAIN_TRANSCRIPTOME.out.fasta, OBTAIN_TRANSCRIPTOME.out.gtf)
-	
-	
-	
+	if (aligner == "star_rsem") {
+		ch_gene_counts = RUN_STAR_RSEM(ch_cat_fastq, aligner, OBTAIN_TRANSCRIPTOME.out.fasta, OBTAIN_TRANSCRIPTOME.out.gtf).counts_gene
+	} else if (aligner == "star_salmon") {
+		ch_gene_counts = RUN_STAR_SALMON(ch_cat_fastq, aligner, OBTAIN_TRANSCRIPTOME.out.fasta, OBTAIN_TRANSCRIPTOME.out.gtf).counts_gene
 	} else if (aligner in ["salmon","kallisto"]) {
 		ch_gene_counts = RUN_PSEUDO_ALIGNMENT(ch_cat_fastq, aligner, OBTAIN_TRANSCRIPTOME.out.fasta, OBTAIN_TRANSCRIPTOME.out.gtf).counts_gene
 	} else {
 		println "no matching aligner found"
 	}
 
+	ch_gene_counts
+	ch_gene_counts.view()
 
-/*
+
     //
     // MODULE: differential gene expression analysis
     //
 	DGE_ANALYSIS_DESEQ2(ch_gene_counts, input_samplesheet)
 	DGE_ANALYSIS_EDGER(ch_gene_counts, input_samplesheet)
 	ch_versions = ch_versions.mix(DGE_ANALYSIS_DESEQ2.out.versions.first())
-*/
 
 
 
 /*
-
     //
     // Collate and save software versions
     //
