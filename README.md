@@ -90,6 +90,8 @@ For more details about the output files and reports, please refer to the
 - include pre-made indeces of aligners to avoid construction
 - more preprocessing: adapter trimming, removal ribosomal RNA, ...
 - make salmon aligner decoy-aware
+- add test run option
+- add ext.args to config
 
 
 

@@ -15,7 +15,7 @@ rm(list=ls())                                        # remove all the objects fr
 workDir <- "."      # working directory for the R session
 # workDir <- "/home/stefanloipfinger/Desktop/startools/"      # working directory for the R session
 
-projectName <- "rnaseqdge_startools_edger"                         # name of the project
+projectName <- "rnaseqdge_sartools_edger"                         # name of the project
 author <- "loipf"                                # author of the statistical analysis/report
 
 targetFile <- "sample_sheet.tsv"                     # path to the design/target file
@@ -100,11 +100,11 @@ save.image(file=paste0(projectName, ".RData"))
 # generating HTML report
 tryCatch( {
 
-### docker quay.io/biocontainers/r-sartools:1.8.1--r43hdfd78af_2 missing library:
-# /usr/local/bin/pandoc: error while loading shared libraries: libgmp.so.10: cannot open shared object file: No such file or directory
-# Error in system(paste(shQuote(path), "--version"), intern = TRUE) : 
-# 	error in running command
-# Calls: writeReport.DESeq2 ... get_pandoc_version -> with_pandoc_safe_environment -> force -> system
+	### docker quay.io/biocontainers/r-sartools:1.8.1--r43hdfd78af_2 missing library:
+	# /usr/local/bin/pandoc: error while loading shared libraries: libgmp.so.10: cannot open shared object file: No such file or directory
+	# Error in system(paste(shQuote(path), "--version"), intern = TRUE) : 
+	# 	error in running command
+	# Calls: writeReport.DESeq2 ... get_pandoc_version -> with_pandoc_safe_environment -> force -> system
 
 	writeReport.edgeR(target=target, counts=counts, out.edgeR=out.edgeR, summaryResults=summaryResults,
 		              majSequences=majSequences, workDir=workDir, projectName=projectName, author=author,

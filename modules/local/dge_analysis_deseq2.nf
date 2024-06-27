@@ -3,7 +3,7 @@ process DGE_ANALYSIS_DESEQ2 {
     label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/salmon:1.10.1--h7e5ed60_0' :
+        'https://depot.galaxyproject.org/singularity/r-sartools:1.8.1--r43hdfd78af_2' :
         'quay.io/biocontainers/r-sartools:1.8.1--r43hdfd78af_2' }"
 
     input:
@@ -11,16 +11,17 @@ process DGE_ANALYSIS_DESEQ2 {
     path(sample_sheet)
 
     output:
+    path "*"
     path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
 
-    // beforeScript 'apt-get update && apt-get install -y libgmp10 && apt-get clean'
+    beforeScript 'apt-get update && apt-get install -y libgmp10 && apt-get clean'
 
 
-	script: // this script is bundled with the pipeline, in /bin/
+	script: 
     """
     
     ### edit for sartools
@@ -28,8 +29,6 @@ process DGE_ANALYSIS_DESEQ2 {
     cut -d',' -f1,2,4- "$sample_sheet" | tr ',' '\t' > sample_sheet.tsv
     
     rnaseqdge_sartools_script_DESeq2.R
-    
-    echo "finished"
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -15,7 +15,7 @@ rm(list=ls())                                        # remove all the objects fr
 workDir <- "."      # working directory for the R session
 # workDir <- "/home/stefanloipfinger/Desktop/startools/"      # working directory for the R session
 
-projectName <- "rnaseqdge_startools_deseq2"                         # name of the project
+projectName <- "rnaseqdge_sartools_deseq2"                         # name of the project
 author <- "loipf"                                # author of the statistical analysis/report
 
 targetFile <- "sample_sheet.tsv"                     # path to the design/target file
@@ -28,7 +28,7 @@ counts_file_path = "all_samples.gene_counts.tsv"  # gene counts file: genes x sa
 
 
 varInt <- "group"                                    # factor of interest
-condRef <- "control"                                   # reference biological condition
+condRef <- "control"                                 # reference biological condition
 batch <- NULL                                        # blocking factor: NULL (default) or "batch" for example
 
 fitType <- "parametric"                              # mean-variance relationship: "parametric" (default), "local" or "mean"
@@ -109,11 +109,11 @@ save.image(file=paste0(projectName, ".RData"))
 # generating HTML report
 tryCatch( {
 
-### docker quay.io/biocontainers/r-sartools:1.8.1--r43hdfd78af_2 missing library:
-# /usr/local/bin/pandoc: error while loading shared libraries: libgmp.so.10: cannot open shared object file: No such file or directory
-# Error in system(paste(shQuote(path), "--version"), intern = TRUE) : 
-# 	error in running command
-# Calls: writeReport.DESeq2 ... get_pandoc_version -> with_pandoc_safe_environment -> force -> system
+	### docker quay.io/biocontainers/r-sartools:1.8.1--r43hdfd78af_2 missing library:
+	# /usr/local/bin/pandoc: error while loading shared libraries: libgmp.so.10: cannot open shared object file: No such file or directory
+	# Error in system(paste(shQuote(path), "--version"), intern = TRUE) : 
+	# 	error in running command
+	# Calls: writeReport.DESeq2 ... get_pandoc_version -> with_pandoc_safe_environment -> force -> system
 
 	writeReport.DESeq2(target=target, counts=counts, out.DESeq2=out.DESeq2, summaryResults=summaryResults,
                    majSequences=majSequences, workDir=workDir, projectName=projectName, author=author,
@@ -121,10 +121,10 @@ tryCatch( {
                    condRef=condRef, batch=batch, fitType=fitType, cooksCutoff=cooksCutoff,
                    independentFiltering=independentFiltering, alpha=alpha, pAdjustMethod=pAdjustMethod,
                    typeTrans=typeTrans, locfunc=locfunc, colors=colors)
-        },
-        error = function(cond) {
-            message(conditionMessage(cond))
-        }
+    },
+    error = function(cond) {
+        message(conditionMessage(cond))
+    }
 )
 
 
