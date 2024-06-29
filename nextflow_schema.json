@@ -49,13 +49,13 @@
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
             "properties": {
-            	"aligner": {
+                "aligner": {
                     "type": "string",
                     "description": "aligner method",
                     "help_text": "choose between 'star_rsem', 'star_salmon', 'kallisto', 'salmon'",
                     "fa_icon": "far fa-file-code"
                 },
-            	"genome_fasta": {
+                "genome_fasta": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
@@ -65,7 +65,7 @@
                     "help_text": "for 'star_rsem', 'star_salmon': genome, for 'kallisto', 'salmon': transcriptome",
                     "fa_icon": "far fa-file-code"
                 },
-        	"genome_gtf": {
+                "genome_gtf": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
@@ -75,8 +75,7 @@
                     "help_text": "GTF file with gene annotations",
                     "fa_icon": "far fa-file-code"
                 },
-            
-            
+
                 "genome": {
                     "type": "string",
                     "description": "Name of iGenomes reference.",

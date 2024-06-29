@@ -1,4 +1,3 @@
-
 <h1>
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-rnaseqdge_logo_dark.png">
@@ -22,29 +21,23 @@
 
 **nf-core/rnaseqdge** is a bioinformatics pipeline that analyses RNA sequencing data and performes differential gene expression analysis. It takes a samplesheet and FASTQ files as input, performs quality control, (pseudo-)alignment, produces a gene expression matrix, a QC report, and differentially expressed genes between two groups.
 
-
 1. combine multiple RNAseq experiment per sample together
 2. read quality control ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 3. summarize quality control of raw reads ([`MultiQC`](http://multiqc.info/))
-4. if reference fasta is not given, download latest human reference genome and transcriptome from Ensembl 
+4. if reference fasta is not given, download latest human reference genome and transcriptome from Ensembl
 5. multiple gene quantification routes:
-	- aligner (slow):
-		- [`STAR`](https://github.com/alexdobin/STAR) -> [`Salmon`](https://combine-lab.github.io/salmon/)
-		- [`STAR`](https://github.com/alexdobin/STAR) -> [`RSEM`](https://github.com/deweylab/RSEM)
-	- pseudo-aligner (fast):
-		- [`Salmon`](https://combine-lab.github.io/salmon/)
-		- [`Kallisto`](https://pachterlab.github.io/kallisto/)
+   - aligner (slow):
+     - [`STAR`](https://github.com/alexdobin/STAR) -> [`Salmon`](https://combine-lab.github.io/salmon/)
+     - [`STAR`](https://github.com/alexdobin/STAR) -> [`RSEM`](https://github.com/deweylab/RSEM)
+   - pseudo-aligner (fast):
+     - [`Salmon`](https://combine-lab.github.io/salmon/)
+     - [`Kallisto`](https://pachterlab.github.io/kallisto/)
 6. differential gene expression analysis using [`DESeq2`](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8) and [`edgeR`](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2796818/)
-
-		
-
-
 
 ## Usage
 
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow.
-
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -69,8 +62,8 @@ nextflow run nf-core/rnaseqdge \
    --input samplesheet.csv \
    --outdir <OUTDIR>
 ```
-(Note: `star_rsem` and `star_salmon` index file creation can take multiple hours and is RAM intensive.) 
 
+(Note: `star_rsem` and `star_salmon` index file creation can take multiple hours and is RAM intensive.)
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
@@ -96,8 +89,6 @@ For more details about the output files and reports, please refer to the
 - add 3 or more group comparisons for DGE
 - add singularity, conda, etc ..
 - proper software versions output
-
-
 
 ## Citations
 

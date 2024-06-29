@@ -133,7 +133,7 @@ workflow RNASEQDGE {
 
 /*
     //
-    // Collate and save software versions
+    // TODO: Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
         .collectFile(

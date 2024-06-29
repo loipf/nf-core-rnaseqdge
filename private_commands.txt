@@ -4,7 +4,7 @@ nf-core create -n rnaseqdge -d "RNA-seq quantification analysis with differentia
 
 
 ### before release
-nf-core lint .
+nf-core lint
 prettier -w .
 
 
@@ -15,7 +15,12 @@ nextflow run /home/sl/Documents/gitlab/nf-core-rnaseqdge/main.nf \
 	--outdir test_output \
 	-profile docker
 
-
+### test pipeline
+nextflow run /home/stefanloipfinger/Documents/gitlab/nf-core-rnaseqdge/main.nf \
+	--input /home/stefanloipfinger/Documents/rnaseqdge_test/fastq_data/sample_sheet.csv \
+	--aligner kallisto \
+	--outdir test_output_kallisto \
+	-profile docker
 
 
 
