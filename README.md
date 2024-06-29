@@ -5,8 +5,7 @@
   </picture>
 </h1>
 
-[![GitHub Actions CI Status](https://github.com/nf-core/rnaseqdge/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/rnaseqdge/actions/workflows/ci.yml)
-[![GitHub Actions Linting Status](https://github.com/nf-core/rnaseqdge/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/rnaseqdge/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnaseqdge/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
@@ -21,7 +20,7 @@
 
 **nf-core/rnaseqdge** is a bioinformatics pipeline that analyses RNA sequencing data and performes differential gene expression analysis. It takes a samplesheet and FASTQ files as input, performs quality control, (pseudo-)alignment, produces a gene expression matrix, a QC report, and differentially expressed genes between two groups.
 
-1. combine multiple RNAseq experiment per sample together
+1. combine multiple RNA-seq runs per sample together
 2. read quality control ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 3. summarize quality control of raw reads ([`MultiQC`](http://multiqc.info/))
 4. if reference fasta is not given, download latest human reference genome and transcriptome from Ensembl
@@ -62,6 +61,18 @@ nextflow run nf-core/rnaseqdge \
    --input samplesheet.csv \
    --outdir <OUTDIR>
 ```
+or with custom genome:
+
+```bash
+nextflow run nf-core/rnaseqdge \
+   -profile docker \
+   --aligner <star_rsem|star_salmon|kallisto|salmon> \
+   --input samplesheet.csv \
+   --genome_fasta genome.fa.gz
+   --genome_gtf genome_gtf.gtf
+   --outdir <OUTDIR>
+```
+
 
 (Note: `star_rsem` and `star_salmon` index file creation can take multiple hours and is RAM intensive.)
 
@@ -73,9 +84,9 @@ For more details and further functionality, please refer to the [usage documenta
 
 ## Pipeline output
 
-To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/rnaseqdge/results) tab on the nf-core website pipeline page.
-For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/rnaseqdge/output).
+- quality reports of fastq input files
+- quantified gene expression table 
+- differentially expressed genes between two groups
 
 ## Possible improvements:
 
