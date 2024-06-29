@@ -6,12 +6,10 @@
 include { FASTQ_ALIGN_STAR } from '../../subworkflows/nf-core/fastq_align_star/main'
 include { STAR_GENOMEGENERATE } from '../../modules/nf-core/star/genomegenerate'
 
-
 include { SALMON_INDEX } from '../../modules/local/salmon_index_custom'
 include { SALMON_QUANT } from '../../modules/nf-core/salmon/quant'
 include { CUSTOM_TX2GENE   } from '../../modules/nf-core/custom/tx2gene'
 include { TXIMETA_TXIMPORT } from '../../modules/nf-core/tximeta/tximport'
-
 
 
 

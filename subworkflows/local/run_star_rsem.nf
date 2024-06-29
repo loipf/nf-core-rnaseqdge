@@ -6,14 +6,10 @@
 include { FASTQ_ALIGN_STAR } from '../../subworkflows/nf-core/fastq_align_star/main'
 include { STAR_GENOMEGENERATE } from '../../modules/nf-core/star/genomegenerate'
 
-
 include { RSEM_PREPAREREFERENCE } from '../../modules/nf-core/rsem/preparereference/main'
 include { RSEM_CALCULATEEXPRESSION } from '../../modules/nf-core/rsem/calculateexpression/main'
 
-
 include { QUANTIFY_RSEM } from '../../subworkflows/local/quantify_rsem'
-
-
 
 include { SALMON_INDEX } from '../../modules/local/salmon_index_custom'
 include { SALMON_QUANT } from '../../modules/nf-core/salmon/quant'
@@ -48,7 +44,6 @@ workflow RUN_STAR_RSEM {
     //
 	QUANTIFY_RSEM(reads, RSEM_PREPAREREFERENCE.out.index, fasta)
 	ch_versions = ch_versions.mix(QUANTIFY_RSEM.out.versions)
-    //ch_pseudo_multiqc = QUANTIFY_RSEM.out.stat
 
 
     emit:

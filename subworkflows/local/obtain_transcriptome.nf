@@ -51,7 +51,6 @@ workflow OBTAIN_TRANSCRIPTOME {
         GUNZIP_FASTA (
             fasta.map{ it -> [[id:it[0].baseName], it] }
         )
-        //ch_fasta = GUNZIP_FASTA.out.gunzip.map{ meta, fasta -> [fasta] } //.collect()
         ch_fasta = GUNZIP_FASTA.out.gunzip.map{ meta, fasta -> [[id:fasta.baseName], fasta] }.collect()
         
         
@@ -59,11 +58,8 @@ workflow OBTAIN_TRANSCRIPTOME {
         ch_versions = ch_versions.mix(GUNZIP_FASTA.out.versions)
     } else {
         ch_fasta = fasta.collect()
-        //ch_fasta = Channel.value(file(fasta))
     }
 
-
-	ch_fasta.view()
 	
 
     //
@@ -75,7 +71,6 @@ workflow OBTAIN_TRANSCRIPTOME {
             gtf.map{ it -> [[id:it[0].baseName], it] }
         )
         ch_gtf = GUNZIP_GTF.out.gunzip.map{ meta, gtf -> [gtf] }.collect()
-        //ch_gtf = GUNZIP_GTF.out.gunzip.map{ meta, gtf -> [[id:gtf.baseName], gtf] }.collect()
         ch_versions = ch_versions.mix(GUNZIP_GTF.out.versions)
     } else {
         ch_gtf = gtf.collect()
