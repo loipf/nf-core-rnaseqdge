@@ -5,8 +5,7 @@
   </picture>
 </h1>
 
-[![GitHub Actions CI Status](https://github.com/nf-core/rnaseqdge/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/rnaseqdge/actions/workflows/ci.yml)
-[![GitHub Actions Linting Status](https://github.com/nf-core/rnaseqdge/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/rnaseqdge/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnaseqdge/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
@@ -19,52 +18,63 @@
 
 ## Introduction
 
-**nf-core/rnaseqdge** is a bioinformatics pipeline that ...
+**nf-core/rnaseqdge** is a bioinformatics pipeline that analyses RNA sequencing data and performes differential gene expression analysis. It takes a samplesheet and FASTQ files as input, performs quality control, (pseudo-)alignment, produces a gene expression matrix, a QC report, and differentially expressed genes between two groups.
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
-
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+1. combine multiple RNA-seq runs per sample together
+2. read quality control ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+3. summarize quality control of raw reads ([`MultiQC`](http://multiqc.info/))
+4. if reference fasta is not given, download latest human reference genome and transcriptome from Ensembl
+5. multiple gene quantification routes:
+   - aligner (slow):
+     - [`STAR`](https://github.com/alexdobin/STAR) -> [`Salmon`](https://combine-lab.github.io/salmon/)
+     - [`STAR`](https://github.com/alexdobin/STAR) -> [`RSEM`](https://github.com/deweylab/RSEM)
+   - pseudo-aligner (fast):
+     - [`Salmon`](https://combine-lab.github.io/salmon/)
+     - [`Kallisto`](https://pachterlab.github.io/kallisto/)
+6. differential gene expression analysis using [`DESeq2`](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8) and [`edgeR`](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2796818/)
 
 ## Usage
 
 > [!NOTE]
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
-
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow.
 
 First, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:
 
 ```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+sample,fastq_1,fastq_2,group
+c1,Control1_1.fq.gz,Control1_2.fq.gz,control
+c2,Control2_1.fq.gz,Control2_2.fq.gz,control
+t1,Tumor1_1.fq.gz,Tumor1_2.fq.gz,tumor
+t2,Tumor2_1.fq.gz,Tumor2_2.fq.gz,tumor
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
+Each row represents a pair of fastq files (currently only paired end supported).
 
 Now, you can run the pipeline using:
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
-
 ```bash
 nextflow run nf-core/rnaseqdge \
-   -profile <docker/singularity/.../institute> \
+   -profile docker \
+   --aligner <star_rsem|star_salmon|kallisto|salmon> \
    --input samplesheet.csv \
    --outdir <OUTDIR>
 ```
+or with custom genome:
+
+```bash
+nextflow run nf-core/rnaseqdge \
+   -profile docker \
+   --aligner <star_rsem|star_salmon|kallisto|salmon> \
+   --input samplesheet.csv \
+   --genome_fasta genome.fa.gz
+   --genome_gtf genome_gtf.gtf
+   --outdir <OUTDIR>
+```
+
+
+(Note: `star_rsem` and `star_salmon` index file creation can take multiple hours and is RAM intensive.)
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
@@ -74,23 +84,22 @@ For more details and further functionality, please refer to the [usage documenta
 
 ## Pipeline output
 
-To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/rnaseqdge/results) tab on the nf-core website pipeline page.
-For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/rnaseqdge/output).
+- quality reports of fastq input files
+- quantified gene expression table 
+- differentially expressed genes between two groups
 
-## Credits
+## Possible improvements:
 
-nf-core/rnaseqdge was originally written by loipf.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-For further information or help, don't hesitate to get in touch on the [Slack `#rnaseqdge` channel](https://nfcore.slack.com/channels/rnaseqdge) (you can join with [this invite](https://nf-co.re/join/slack)).
+- single-end reads
+- include pre-made indeces of aligners to avoid construction
+- more preprocessing: adapter trimming, removal ribosomal RNA, ...
+- make salmon aligner decoy-aware
+- add test run option
+- add ext.args to config
+- add covariables to DGE analysis
+- add 3 or more group comparisons for DGE
+- add singularity, conda, etc ..
+- proper software versions output
 
 ## Citations
 

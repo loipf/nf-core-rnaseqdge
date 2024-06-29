@@ -14,7 +14,6 @@ include { SUMMARIZEDEXPERIMENT_SUMMARIZEDEXPERIMENT as SE_TRANSCRIPT         } f
 
 workflow QUANTIFY_PSEUDO_ALIGNMENT {
     take:
-    samplesheet               // channel: [ val(meta), /path/to/samplsheet ]
     reads                     // channel: [ val(meta), [ reads ] ]
     index                     // channel: /path/to//index/
     transcript_fasta          // channel: /path/to/transcript.fasta

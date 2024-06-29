@@ -43,6 +43,13 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
+
+workflow NFCORE_RNASEQDGE {
+    RNASEQDGE ()
+}
+
+
+/*
 workflow NFCORE_RNASEQDGE {
 
     take:
@@ -58,9 +65,12 @@ workflow NFCORE_RNASEQDGE {
     )
 
     emit:
-    multiqc_report = RNASEQDGE.out.multiqc_report // channel: /path/to/multiqc_report.html
+    multiqc_report = 'ok'
+    //multiqc_report = RNASEQDGE.out.multiqc_report // channel: /path/to/multiqc_report.html
 
 }
+*/
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -87,10 +97,17 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RNASEQDGE (
-        PIPELINE_INITIALISATION.out.samplesheet
+    
+	RNASEQDGE (
+        params.input,
+        params.aligner,
+        params.genome_fasta,
+        params.genome_gtf,
+        params.ensembl_release
     )
+    
 
+/*
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -101,8 +118,10 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_RNASEQDGE.out.multiqc_report
+        RNASEQDGE.out.multiqc_report
     )
+    
+   */
 }
 
 /*

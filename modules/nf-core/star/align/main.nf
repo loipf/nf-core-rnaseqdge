@@ -10,7 +10,8 @@ process STAR_ALIGN {
     input:
     tuple val(meta), path(reads, stageAs: "input*/*")
     tuple val(meta2), path(index)
-    tuple val(meta3), path(gtf)
+    //tuple val(meta3), path(gtf) // edited
+    path(gtf)
     val star_ignore_sjdbgtf
     val seq_platform
     val seq_center
@@ -49,11 +50,16 @@ process STAR_ALIGN {
     def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
     def mv_unsorted_bam = (args.contains('--outSAMtype BAM Unsorted SortedByCoordinate')) ? "mv ${prefix}.Aligned.out.bam ${prefix}.Aligned.unsort.out.bam" : ''
     """
+    
+    ### edited quantMode
+    
     STAR \\
         --genomeDir $index \\
         --readFilesIn ${reads1.join(",")} ${reads2.join(",")} \\
         --runThreadN $task.cpus \\
+        --readFilesCommand zcat \\
         --outFileNamePrefix $prefix. \\
+        --quantMode TranscriptomeSAM \\
         $out_sam_type \\
         $ignore_gtf \\
         $attrRG \\

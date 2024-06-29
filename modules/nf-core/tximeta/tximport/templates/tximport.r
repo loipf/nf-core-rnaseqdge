@@ -75,9 +75,10 @@ read_transcript_info <- function(tinfo_path){
     transcript_info <- read.csv(tinfo_path, sep="\t", header = TRUE,
                                 col.names = c("tx", "gene_id", "gene_name"))
 
-    extra <- setdiff(rownames(txi[[1]]), as.character(transcript_info[["tx"]]))
+	txi_rownames = gsub('\\\\..*',"", rownames(txi[[1]]))
+    extra <- setdiff(txi_rownames, as.character(transcript_info[["tx"]]))
     transcript_info <- rbind(transcript_info, data.frame(tx=extra, gene_id=extra, gene_name=extra))
-    transcript_info <- transcript_info[match(rownames(txi[[1]]), transcript_info[["tx"]]), ]
+    transcript_info <- transcript_info[match(txi_rownames, transcript_info[["tx"]]), ]
     rownames(transcript_info) <- transcript_info[["tx"]]
 
     list(transcript = transcript_info,
@@ -127,6 +128,11 @@ dropInfReps <- '$quant_type' == "kallisto"
 # Import transcript-level quantifications
 txi <- tximport(fns, type = '$quant_type', txOut = TRUE, dropInfReps = dropInfReps)
 
+rownames(txi\$abundance) = gsub("\\\\..*","", rownames(txi\$abundance))
+rownames(txi\$counts) = gsub("\\\\..*","", rownames(txi\$counts))
+rownames(txi\$length) = gsub("\\\\..*","", rownames(txi\$length))
+
+
 # Read transcript and sample data
 transcript_info <- read_transcript_info('$tx2gene')
 
@@ -148,9 +154,9 @@ params <- list(
 # Process gene-level data if tx2gene mapping is available
 if ("tx2gene" %in% names(transcript_info) && !is.null(transcript_info\$tx2gene)) {
     tx2gene <- transcript_info\$tx2gene
-    gi <- summarizeToGene(txi, tx2gene = tx2gene)
-    gi.ls <- summarizeToGene(txi, tx2gene = tx2gene, countsFromAbundance = "lengthScaledTPM")
-    gi.s <- summarizeToGene(txi, tx2gene = tx2gene, countsFromAbundance = "scaledTPM")
+    gi <- summarizeToGene(txi, tx2gene = tx2gene, ignoreTxVersion=T)
+    gi.ls <- summarizeToGene(txi, tx2gene = tx2gene, countsFromAbundance = "lengthScaledTPM", ignoreTxVersion=T)
+    gi.s <- summarizeToGene(txi, tx2gene = tx2gene, countsFromAbundance = "scaledTPM", ignoreTxVersion=T)
 
     gene_info <- transcript_info\$gene[match(rownames(gi[[1]]), transcript_info\$gene[["gene_id"]]),]
     rownames(gene_info) <- gene_info[["tx"]]
