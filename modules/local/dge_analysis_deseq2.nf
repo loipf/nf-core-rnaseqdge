@@ -2,37 +2,32 @@ process DGE_ANALYSIS_DESEQ2 {
     tag "$gene_counts"
     label "process_medium"
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/r-sartools:1.8.1--r43hdfd78af_2' :
-        'quay.io/biocontainers/r-sartools:1.8.1--r43hdfd78af_2' }"
+    container 'docker.io/loipf/nf_rnaseqdge_dge_analysis'
 
     input:
     tuple val(meta), path(gene_counts)
     path(sample_sheet)
 
     output:
-    path "*"
-    path "versions.yml", emit: versions
+    path "dge_deseq2_analysis.html"
+    path "dge_deseq2_results.tsv"
+    path "gene_counts_sf_vst.tsv"
 
     when:
     task.ext.when == null || task.ext.when
 
 
-    beforeScript 'apt-get update && apt-get install -y libgmp10 && apt-get clean'
-
-
-	script: 
+    script: 
     """
     
-    ### edit for sartools
-    mv $gene_counts "all_samples.gene_counts.tsv"
-    cut -d',' -f1,2,4- "$sample_sheet" | tr ',' '\t' > sample_sheet.tsv
-    
-    rnaseqdge_sartools_script_DESeq2.R
-    
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        R: \$(echo \$(R --version | head -n 1) | sed -e "s/R version //g")
-    END_VERSIONS
+    Rscript -e "
+    curr_dir = getwd();
+    rmarkdown_file_path = system('which run_dge_deseq2.R', intern = TRUE);
+	params_list = list(curr_dir = curr_dir, gene_count_matrix_path='$gene_counts', sample_anno_path='$sample_sheet');
+	print(params_list);
+	rmarkdown::render(rmarkdown_file_path, output_file=file.path(curr_dir,'dge_deseq2_analysis.html'), params = params_list );
+	"
+
     """
+    
 }

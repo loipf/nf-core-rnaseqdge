@@ -92,7 +92,10 @@ For more details about the output files and reports, please refer to the
 - make salmon aligner decoy-aware
 - add test run option
 - add ext.args to config
-
+- add covariables to DGE analysis
+- add 3 or more group comparisons for DGE
+- add singularity, conda, etc ..
+- proper software versions output
 
 
 

@@ -123,17 +123,12 @@ workflow RNASEQDGE {
 		println "no matching aligner found"
 	}
 
-	ch_gene_counts
-	ch_gene_counts.view()
-
 
     //
     // MODULE: differential gene expression analysis
     //
 	DGE_ANALYSIS_DESEQ2(ch_gene_counts, input_samplesheet)
 	DGE_ANALYSIS_EDGER(ch_gene_counts, input_samplesheet)
-	ch_versions = ch_versions.mix(DGE_ANALYSIS_DESEQ2.out.versions.first())
-
 
 
 /*
